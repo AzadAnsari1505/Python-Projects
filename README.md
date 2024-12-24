@@ -18,6 +18,6 @@ bash <br>
 Copy code<br>
 python password_generator.py
 
-Usage Instructions
+Usage Instructions <br>
 Each project can be run individually by executing the respective Python file (e.g., python project_name.py).<br>
 Ensure that you have the necessary Python version and dependencies installed as listed in the requirements.txt file.
