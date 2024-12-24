@@ -1,7 +1,7 @@
 **My Python Projects**
 Welcome to my collection of Python projects! Below, you will find various projects that I have worked on. Each project is designed to demonstrate different skills and concepts in Python.
 
-**Table of Contents**
+**Table of Contents** <br>
 Project 1: Password_generator <br>
 Installation Instructions <br>
 Usage Instructions
