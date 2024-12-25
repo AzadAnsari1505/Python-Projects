@@ -1,0 +1,101 @@
+import speech_recognition as sr
+import webbrowser
+import pyttsx3
+import musicLibrary
+import requests
+from openai import OpenAI
+
+recognizer = sr.Recognizer()
+engine = pyttsx3.init()
+newsapi = "66e7c2fe4e8143be8594428b20699966"
+
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def aiprocess(command):
+    client = OpenAI(api_key="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")  # Enter your paid OpenAI key here
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a concise assistant. Provide brief and to-the-point answers in minimal words."},
+            {"role": "user", "content": command}
+        ]
+    )
+    return completion.choices[0].message.content
+
+
+    return completion.choices[0].message.content
+
+def processCommand(c):
+    if 'open google' in c.lower():
+        speak("Opening Google")
+        webbrowser.open("https://google.com")
+    elif 'open facebook' in c.lower():
+        speak("Opening facebook")
+        webbrowser.open("https://facebook.com")
+    elif 'open youtube' in c.lower():
+        speak("Opening youtube")
+        webbrowser.open("https://youtube.com")
+    elif 'open linkedin' in c.lower():
+        speak("Opening linkedin")
+        webbrowser.open("https://linkedin.com")
+    elif 'exit' in command:
+        speak("Goodbye!")
+        exit()
+    elif c.lower().startswith("play"):
+        song = c.lower().split(" ")[1]
+        link = musicLibrary.music[song]
+        webbrowser.open(link)
+    elif "news" in c.lower():
+        r = requests.get("https://newsapi.org/v2/top-headlines?country=us&apiKey=66e7c2fe4e8143be8594428b20699966")
+        if r.status_code == 200:
+            data = r.json()  # Convert response to JSON
+            # Extract all titles from the articles list
+            articles = data.get('articles',[])
+            
+            #Speak the lines 
+            for article in articles:
+                speak(article["title"])
+    else:
+        #here the client.py(ai function) will be called
+        output = aiprocess(c)
+        speak(output)
+        
+        
+if __name__ == "__main__":
+    is_awake = False  # JARVIS starts in inactive mode
+    speak("Initializing JARVIS...")
+    
+    while True:
+        try:
+            with sr.Microphone() as source:
+                if not is_awake:
+                    # Listen for wake word
+                    print("Listening for wake word (say 'Jarvis')...")
+                    audio = recognizer.listen(source, timeout=5, phrase_time_limit=3)
+                    wake_word = recognizer.recognize_google(audio).lower()
+                    
+                    if wake_word == "jarvis":
+                        is_awake = True
+                        print("Yes, I am listening.")
+                        speak("Yes, I am listening.")
+                else:
+                    # Listen for commands
+                    print("Listening for command...")
+                    audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                    command = recognizer.recognize_google(audio).lower()
+                    
+                    if "exit" in command:
+                        speak("Goodbye!")
+                        break  # Exit the loop
+                    else:
+                        processCommand(command)  # Process the command
+                    
+        except sr.UnknownValueError:
+            print("Could not understand audio. Please try again.")
+        except sr.RequestError as e:
+            print(f"Speech recognition error: {e}")
+        except Exception as e:
+            print(f"Error: {e}")
