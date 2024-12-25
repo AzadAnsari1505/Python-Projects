@@ -9,13 +9,14 @@ recognizer = sr.Recognizer()
 engine = pyttsx3.init()
 newsapi = "66e7c2fe4e8143be8594428b20699966"
 
+paid_api_key = input("Enter Your paid api key here  : ") #Enter your paid OpenAI key here
 
 def speak(text):
     engine.say(text)
     engine.runAndWait()
 
 def aiprocess(command):
-    client = OpenAI(api_key="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")  # Enter your paid OpenAI key here
+    client = OpenAI(api_key=paid_api_key)  #If key will correct then only all features are available
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
