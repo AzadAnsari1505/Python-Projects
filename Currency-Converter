@@ -1,0 +1,20 @@
+import requests
+
+def curr_converter(baseCurrency, targetCurrency, amount ):
+    url = (f"https://v6.exchangerate-api.com/v6/9fd2d1d00b1b2906c8e94cf5/latest/{baseCurrency}")
+    result = requests.get(url)
+    
+    if(result.status_code == 200):
+        data = result.json()  # Parse JSON response
+        baseToTarget = data["conversion_rates"][targetCurrency] 
+        finalConversion = baseToTarget * amount
+        print(f"{amount} {baseCurrency} is equivalent to {finalConversion:.2f} {targetCurrency}.")
+        
+    else:
+        print(f"Target Currency {targetCurrency} not present in Conversion rates ")
+    
+baseCurrency = input("Enter the base currency : ").upper()
+targetCurrency = input("Enter the target currency : ").upper()
+amount = int(input("Enter the amount : "))
+
+curr_converter(baseCurrency, targetCurrency, amount)
